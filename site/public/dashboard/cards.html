@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <link rel="shortcut icon" href="../assets/icon/favicon.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href=".././assets/icon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href=".././assets/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href=".././assets/icon/favicon-16x16.png">
+    <link rel="manifest" href=".././assets/icon/site.webmanifest">
+    <title>Comic Master | Área do usuário</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script src="../js/funcoes.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <script type="text/javascript" src="https://www.chartjs.org/dist/2.8.0/Chart.min.js"></script>
+
+</head>
+
+<body onload="validarSessao(), carregarGrafico(), carregarGraficoEditora(), 
+pegarVotos(), pegarVotosEditora(), enviarVotos(), todosVotos()">
+
+
+    <div class="div_background"></div>
+
+    <div class="conteudo">
+        <div class="header">
+            <div class="container">
+                <h1 class="titulo">Comic Master</h1>
+                <ul class="navbar">
+                    <li><a href="recomendacoes.html">Recomendacoes</a></li>
+                    <li><a href="cards.html">Gráficos</a></li>
+                    <li>|</li>
+                    <li><a href=".././login.html" onclick="limparSessao()">Sair</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="trocar_conteudo">
+            <form id="voto_fav">
+
+                <label>Editora preferida</label>
+                <select name="editoras" id="editoras_voto">
+                    <option value="1">Marvel</option>
+                    <option value="2">DC</option>
+                    <option value="3">Image</option>
+                    <option value="4">Dark Horse</option>
+                    <option value="5">Valiant</option>
+                </select>
+
+                <label>Personagem Favorito</label>
+                <select name="herois" id="herois_voto">
+                    <option value="1">Homem de ferro</option>
+                    <option value="2">Batman</option>
+                    <option value="3">Super Homem</option>
+                    <option value="4">Homem Aranha</option>
+                    <option value="5">Mulher Maravilha</option>
+                    <option value="6">Lanterna Verde</option>
+                    <option value="7">Flash</option>
+                    <option value="8">Demolidor</option>
+                    <option value="9">Mulher Gato</option>
+                    <option value="10">Spawn</option>
+                </select>
+            </form>
+            <button onclick="enviarVotos()">Votar</button>
+        </div>
+        <div class="graficos">
+            <div class="grafico_barras">
+                <div class="graph">
+                    <canvas id="chartPersonagem"></canvas>
+                </div>
+            </div>
+
+            <div class="grafico_pizza">
+                <div class="graph">
+                    <canvas id="chartEditora"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
+
+<script>
+    var herois_grafico = [];
+    var editora_grafico = [];
+
+    function enviarVotos() {
+        // var formulario = new URLSearchParams(new FormData(voto_fav));
+        var id_usuarioVar = sessionStorage.ID_USUARIO;
+        var voto_heroi = herois_voto.value
+        var voto_editora = editoras_voto.value
+
+        console.log(id_usuarioVar)
+        console.log(voto_heroi)
+        console.log(voto_editora)
+
+        fetch(`/medidas/voto`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                // crie um atributo que recebe o valor recuperado aqui
+                // Agora vá para o arquivo routes/usuario.js
+                personagem: voto_heroi,
+                editora: voto_editora,
+                id_usuario: id_usuarioVar
+            })
+        }).then(function (resposta) {
+
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+                todosVotos();
+
+            } else {
+                throw ("Houve um erro ao tentar criar o gráfico!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+
+        });
+
+        return false;
+
+    }
+
+    function pegarVotos(opcao_atual) {
+        fetch(`/medidas/voto/${opcao_atual}`, { cache: 'no-store' }).then(function (response) {
+            if (response.ok) {
+                response.json().then(json => {
+                    herois_grafico.push(json[0].quantidade_votos)
+                    console.log(herois_grafico)
+
+                });
+            }
+        });
+
+    }
+
+    function pegarVotosEditora(opcao_atual) {
+        fetch(`/medidas/voto2/${opcao_atual}`, { cache: 'no-store' }).then(function (response) {
+            if (response.ok) {
+                response.json().then(json => {
+                    editora_grafico.push(json[0].quantidade_votos_editora)
+                    console.log(editora_grafico)
+
+                });
+            }
+        });
+
+    }
+
+
+    function todosVotos() {
+        herois_grafico = []
+        editora_grafico = []
+        
+
+        carregarGrafico()
+        carregarGraficoEditora()
+        for (var count = 1; count <= 10; count++) {
+            pegarVotos(count)
+
+        }
+
+        for (var count = 1; count <= 5; count++) {
+            pegarVotosEditora(count)
+
+        }
+        
+    }
+
+    function carregarGrafico() {
+        const labelPersonagem = [
+            'Homem de ferro',
+            'Batman',
+            'Super Homem',
+            'Homem Aranha',
+            'Mulher Maravilha',
+            'Lanterna Verde',
+            'Flash',
+            'Demolidor',
+            'Mulher Gato',
+            'Spawn',
+        ];
+        const dataPersonagem = {
+            labels: labelPersonagem,
+            datasets: [{
+                label: 'Personagens',
+                backgroundColor: ['red', 'black', 'blue', 'purple', 'yellow', 'green', 'orange', 'grey', 'lightblue', 'lightgreen'],
+                borderColor: 'black',
+                data: herois_grafico
+            }]
+        };
+        const configPersonagem = {
+            type: 'bar',
+            data: dataPersonagem,
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#f0f0f0'
+                        }
+                    }
+                }
+            }
+        };
+        var myChartPersonagem = new Chart(
+            document.getElementById('chartPersonagem'),
+            configPersonagem
+        );
+
+    }
+
+    function carregarGraficoEditora() {
+        const labelEditora = [
+            'Marvel',
+            'DC',
+            'Image',
+            'Dark Horse',
+            'Valiant'
+
+        ];
+        const dataEditora = {
+            labels: labelEditora,
+            datasets: [{
+                label: 'Editoras',
+                backgroundColor: ['red', 'blue', 'green', 'black', 'yellow'],
+                borderColor: 'black',
+                data: editora_grafico
+            }]
+        };
+        const configEditora = {
+            type: 'pie',
+            data: dataEditora,
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#f0f0f0'
+                        }
+                    }
+                }
+            }
+        };
+        var myChartEditora = new Chart(
+            document.getElementById('chartEditora'),
+            configEditora
+        );
+
+    }
+
+
+</script>

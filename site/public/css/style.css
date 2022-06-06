@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+body {
+    display: flex;
+    margin: 0%;
+    padding: 0%;
+}
+
+.div_background {
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-image: url(".././assets/imgs/background.png");
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 1;
+}
+
+.conteudo {
+    position: relative;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    border: 4px solid black;
+    background-color: white;
+    margin-top: 2vh;
+    margin-left: 4%;
+    width: 90%;
+    padding: 1%;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    height: fit-content;
+    width: 100%;
+}
+
+.titulo {
+    font-family: 'Bangers', cursive;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 4px solid black;
+    width: 100%;
+    background-color: yellow;
+
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    width: 20%;
+    font-family: 'Bangers', cursive;
+    list-style: none;
+
+}
+
+.agora {
+    font-weight: 800;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    border: 4px solid black;
+    margin-top: 2vh;
+    font-size: large;
+
+}
+
+.container_formulario .titulo{
+    margin-top: 0%;
+    width: 99%;
+    /* width: fit-content; */
+    background-color: orange;
+    padding: 0.5%;
+
+}
+
+.box_h2 {
+    font-family: 'Bangers', cursive;
+    margin-top: 0%;
+    width: 99%;
+    /* width: fit-content; */
+    background-color: green;
+    padding: 0.5%;
+
+}
+
+.box div {
+    display: flex;
+    justify-content: space-around;
+    margin: 1%;
+    padding: 1%;
+
+}
+
+.box span {
+    margin: 1%;
+    padding: 1%;
+
+}
+
+.box div span {
+    display: flex;
+    max-width: 20%;
+
+
+}
+
+.box .span_era_ouro{
+    display: flex;
+
+}
+
+.img_direita{
+    display: flex;
+}
+
+.img_esquerda{
+    display: flex;
+}
+
+.container_formulario {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 1%;
+
+}
+
+.card_cadastro {
+    display: flex;
+    flex-direction: column;
+    border: 4px solid black;
+    background-color: white;
+    width: 50vw;
+    padding: 0% 0% 1% 0%;
+
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Comic Neue', cursive;
+}
+
+.formulario input {
+    width: 30vw;
+    margin-bottom: 2vh;
+
+}
+
+.formulario button {
+    width: 10vw;
+
+}
+
+/* cards */
+.graficos {
+    display: flex;
+    width: 100%;
+
+}
+
+.grafico_barras {
+    width: 70%;
+    margin-top: 2vh;
+
+}
+
+.grafico_pizza {
+    width: 40%;
+
+}
+
+.grafico {
+    float: left;
+
+}
+
+canvas {
+    display: flex;
+    height: 40vh;
+    width: 40vw;
+
+
+}
+
+.cor-alerta {
+    width: 13%;
+    height: 30%;
+    border-radius: 50px;
+    margin-top: 6%;
+    /* background-color: #c7c7c7; */
+}
+
+.graph {
+    height: 40vh;
+}

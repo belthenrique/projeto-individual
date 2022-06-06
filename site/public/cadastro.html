@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icon/favicon-16x16.png">
+    <link rel="manifest" href="./assets/icon/site.webmanifest">
+    <script src="./js/funcoes.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Cadastro</title>
+</head>
+
+<body>
+    <div class="div_background"></div>
+
+    <div class="conteudo">
+        <div class="header">
+            <div class="container">
+                <h1 class="titulo">Comic Master</h1>
+                <ul class="navbar">
+                    <li><a href="./index.html">Inicial</a></li>
+                    <li><a href="./sobre.html">Sobre</a></li>
+                    <li>|</li>
+                    <li><a href="./login.html">Login</a></li>
+                    <li class="agora"><a href="./cadastro.html">Cadastro</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container_formulario">
+            <div class="card_cadastro">
+                <h2 class="titulo">Faça seu cadastro!</h2>
+                <div class="formulario">
+
+                    <span class="tipo_campo">Nome:</span>
+                    <input id="nome_input" type="text" placeholder="Seu nome de usuário">
+                    <small id="validacao_nome"> </small>
+
+                    <span class="tipo_campo">E-mail:</span>
+                    <input id="email_input" type="text" placeholder="meuemail@provedor.com">
+                    <small id="validacao_email"> </small>
+
+                    <span class="tipo_campo">Senha:</span>
+                    <input id="senha_input" type="password" placeholder="******">
+                    <small id="validacao_senha"> </small>
+
+                    <span class="tipo_campo">Confirmação da Senha:</span>
+                    <input id="confirmacao_senha_input" type="password" placeholder="******">
+                    <small id="validacao_senha2"> </small>
+
+                    <button class="btn" onclick="cadastrar()">Cadastrar</button>
+
+                </div>
+
+                <div id="div_erros_login">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    aumentarErro = 0
+
+    function cadastrar() {
+        var nomeVar = nome_input.value;
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+        var confirmacaoSenhaVar = confirmacao_senha_input.value;
+
+        if (nomeVar == "") {
+            validacao_nome.innerHTML = `<span style="color: red">Preencha este campo para prosseguir</span>`;
+            aumentarErro++;
+        } else if (nomeVar.length < 4) {
+            validacao_nome.innerHTML = `<span style="color: red">Nome muito curto</span>`;
+            aumentarErro++;
+        } else {
+            validacao_nome.innerHTML = `Valido`;
+        }
+
+        if (emailVar == "") {
+            validacao_email.innerHTML = `<span style="color: red">Preencha este campo para prosseguir</span>`;
+            aumentarErro++;
+        } else if (emailVar.indexOf("@") == -1) {
+            validacao_email.innerHTML = `<span style="color: red">Email Invalido - Verifique se esta digitando corretamente</span>`;
+            aumentarErro++;
+        } else if (
+            emailVar.endsWith(".com") ||
+            emailVar.endsWith(".br")
+        ) {
+            validacao_email.innerHTML = `Valido`;
+        } else {
+            validacao_email.innerHTML = `<span style="color: red">Email Invalido - Verifique se esta digitando corretamente</span>`;
+            aumentarErro++;
+        }
+        if (senhaVar == "") {
+            validacao_senha.innerHTML = `<span style="color: red">Senha precisa ter no mínimo 8 caracteres</span>`;
+            aumentarErro++;
+        } else if (senhaVar.length <= 7) {
+            validacao_senha.innerHTML = `<span style="color: red">Senha precisa ter no mínimo 8 caracteres</span>`;
+            aumentarErro++;
+        }
+        else {
+            validacao_senha.innerHTML = "Valido";
+        }
+        if (confirmacaoSenhaVar != senhaVar) {
+            validacao_senha2.innerHTML = `<span style="color: red">Senhas não conferem</span>`;
+            aumentarErro++;
+        } else if(confirmacaoSenhaVar == ""){
+            validacao_senha2.innerHTML = `<span style="color: red">Senhas não conferem</span>`;
+            aumentarErro++;
+        }
+        else {
+            validacao_senha2.innerHTML = "Valido";
+        }
+        if (aumentarErro == 0) {
+            executacadastro();
+            window.location.href = "login.html";
+        } else {
+            aumentarErro = 0;
+        }
+    }
+
+    function executacadastro() {
+        //Recupere o valor da nova input pelo nome do id
+        // Agora vá para o método fetch logo abaixo
+        var nomeVar = nome_input.value;
+        var emailVar = email_input.value;
+        var senhaVar = senha_input.value;
+        var confirmacaoSenhaVar = confirmacao_senha_input.value;
+
+        if (nomeVar == "" || emailVar == "" || senhaVar == "" || confirmacaoSenhaVar == "") {
+            cardErro.style.display = "block"
+            mensagem_erro.innerHTML = "(Mensagem de erro para todos os campos em branco)";
+
+            return false;
+        }
+
+        // Enviando o valor da nova input
+        fetch("/usuarios/cadastrar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                // crie um atributo que recebe o valor recuperado aqui
+                // Agora vá para o arquivo routes/usuario.js
+                nomeServer: nomeVar,
+                emailServer: emailVar,
+                senhaServer: senhaVar
+            })
+        }).then(function (resposta) {
+
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+
+                setTimeout(() => {
+                    window.location = "login.html";
+                }, "2000")
+
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+        });
+
+        return false;
+    }
+</script>
